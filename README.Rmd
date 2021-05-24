@@ -1,0 +1,150 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
+```
+
+# sfweight
+
+<!-- badges: start -->
+<!-- badges: end -->
+
+The goal of sfweight is to create a tidier and more streamlined interface to the spdep package. The spdep package has an idiosyncratic syntax that can be difficult to fit into a typical data science work flow. 
+
+The intention behind sfweight is implement a simpler, but stricter workflow that enables the creation of neighbors, spatial weights, and spatially lagged variables. This will be accomplished by decoupling neighbors from weights and utilizing list objects.
+
+sfweight uses sf objects whereas spdep is more flexible with the types of input objects vaialable. 
+
+## Installation
+
+You can install the development version from GitHub with 
+```{r eval=FALSE}
+remotes::install_github("Josiahparry/sfweight")
+```
+
+
+## Motivating example
+
+We can fit a spatial Durbin model by calculating spatially lagged predictors. 
+
+```{r, warning = FALSE, message=FALSE}
+library(sfweight)
+library(tidyverse)
+
+acs_lagged <- acs %>% 
+  mutate(nb = st_neighbors(geometry),
+         wts = st_weights(nb),
+         trans_lag = st_lag(med_house_income, nb, wts),
+         bach_lag = st_lag(bach, nb, wts))
+
+
+durbin_lm <- lm(med_house_income ~ trans_lag + by_pub_trans + bach_lag + bach, 
+   data = acs_lagged)
+
+summary(durbin_lm)
+```
+
+```{r}
+acs_lagged %>% 
+  mutate(inc_lag = st_lag(med_house_income, nb, wts),
+         lisa_group = categorize_lisa(med_house_income, inc_lag)) %>% 
+  ggplot(aes(med_house_income, inc_lag, color = lisa_group)) +
+  geom_point() +
+  labs(title = "Moran Plot") +
+  theme_minimal()
+```
+
+
+## Basic usage & contiguities
+
+```{r}
+str(acs)
+```
+
+We can get neighbors based on Queen contiguities with `st_neighbors()`.
+
+
+## Higher order neighbors
+
+```{r}
+nbs <- st_neighbors(acs)
+
+nbs[1:5]
+```
+
+If needed, we can also identify the cardinalities from the neighbors list as well. 
+
+```{r}
+st_cardinalties(nbs)
+```
+
+
+We can get the weights from the neighbor contiguities as well. By default, `st_weights()` uses row standardization. 
+
+```{r}
+wts <- st_weights(nbs)
+
+wts[1:5]
+```
+
+We can also calculate the spatial lag with the weights and neighbors. 
+
+```{r}
+inc_lag <- st_lag(acs$med_house_income, nbs, wts)
+
+inc_lag[1:5]
+```
+
+
+## K-Nearest Neighbor Distances
+
+If we have point data we can also identify the k-nearest neighbors with `st_knn()`. For an example we can use the `airbnb` dataset that's imported with `sfweight`. 
+
+```{r}
+airbnb
+```
+
+```{r message=FALSE, warning=FALSE}
+airbnb_knn <- st_knn(airbnb)
+
+airbnb_knn[1:5]
+```
+
+## Other weights
+
+Point based weights implemented based on Luc Anselin and Grant Morrison's [notes](https://spatialanalysis.github.io/lab_tutorials/Spatial_Weights_as_Distance_Functions.html#kernal-weights). 
+
+Inverse distance band
+
+```{r}
+airbnb_idw <- st_inverse_weights(airbnb$geometry, airbnb_knn)
+
+airbnb_idw[1]
+```
+
+### Kernal based weights
+
+
+Available kernals are:
+
+- uniform
+- triangular
+- epanechnikov
+- quartic
+- gaussian
+
+```{r}
+airbnb_gauss <- st_kernal_weight(airbnb$geometry, airbnb_knn, "gaussian")
+
+airbnb_gauss[1]
+```
+
