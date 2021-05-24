@@ -103,8 +103,6 @@ str(acs)
 
 We can get neighbors based on Queen contiguities with `st_neighbors()`.
 
-## Higher order neighbors
-
 ``` r
 nbs <- st_neighbors(acs)
 
@@ -275,4 +273,32 @@ airbnb_gauss[1]
 #> [65] 2.154424 1.850619 1.907527 2.339361 2.418562 1.875498 2.228826 2.498773
 #> [73] 2.042146 2.201982 2.171412 2.188205 1.987620 2.112729 2.240502 2.240502
 #> [81] 2.240502 2.223651 1.559591
+```
+
+## Higher order neighbors
+
+``` r
+acs %>% 
+  transmute(nb = st_neighbors(geometry),
+            nb_2 = st_neighbor_lag(nb, 2),
+            nb_cumul_2 = st_neighbor_lag_cumul(nb, 2))
+#> Simple feature collection with 203 features and 3 fields
+#> Geometry type: MULTIPOLYGON
+#> Dimension:     XY
+#> Bounding box:  xmin: -71.19125 ymin: 42.22793 xmax: -70.9201 ymax: 42.45012
+#> Geodetic CRS:  WGS 84
+#> # A tibble: 203 x 4
+#>    nb      nb_2     nb_cumul_2                                          geometry
+#>  * <list>  <list>   <list>                                    <MULTIPOLYGON [°]>
+#>  1 <int [… <int [1… <int [24]> (((-71.06249 42.29221, -71.06234 42.29273, -71.0…
+#>  2 <int [… <int [6… <int [9]>  (((-71.05147 42.28931, -71.05136 42.28933, -71.0…
+#>  3 <int [… <int [1… <int [17]> (((-71.11093 42.35047, -71.11093 42.3505, -71.11…
+#>  4 <int [… <int [1… <int [24]> (((-71.06944 42.346, -71.0691 42.34661, -71.0688…
+#>  5 <int [… <int [9… <int [13]> (((-71.13397 42.25431, -71.13353 42.25476, -71.1…
+#>  6 <int [… <int [1… <int [16]> (((-71.04707 42.3397, -71.04628 42.34037, -71.04…
+#>  7 <int [… <int [1… <int [20]> (((-71.01324 42.38301, -71.01231 42.38371, -71.0…
+#>  8 <int [… <int [8… <int [13]> (((-71.00113 42.3871, -71.001 42.38722, -71.0007…
+#>  9 <int [… <int [1… <int [16]> (((-71.05079 42.32083, -71.0506 42.32076, -71.05…
+#> 10 <int [… <int [1… <int [15]> (((-71.11952 42.28648, -71.11949 42.2878, -71.11…
+#> # … with 193 more rows
 ```

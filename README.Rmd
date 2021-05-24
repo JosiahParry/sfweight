@@ -73,8 +73,6 @@ str(acs)
 We can get neighbors based on Queen contiguities with `st_neighbors()`.
 
 
-## Higher order neighbors
-
 ```{r}
 nbs <- st_neighbors(acs)
 
@@ -147,4 +145,15 @@ airbnb_gauss <- st_kernal_weight(airbnb$geometry, airbnb_knn, "gaussian")
 
 airbnb_gauss[1]
 ```
+
+
+## Higher order neighbors 
+
+```{r}
+acs %>% 
+  transmute(nb = st_neighbors(geometry),
+            nb_2 = st_neighbor_lag(nb, 2),
+            nb_cumul_2 = st_neighbor_lag_cumul(nb, 2))
+```
+
 

@@ -14,7 +14,7 @@ st_neighbors <- function(x, queen = TRUE, ...) {
 #'
 #' @param neighbors A neighbor list object as created by `st_neighbors()`.
 #' @param order The order of neighbors.
-#' @param
+#' @importFrom spdep nblag
 #' @export
 st_neighbor_lag <- function(neighbors, order) {
   class(neighbors) <- "nb"
@@ -29,6 +29,7 @@ st_neighbor_lag <- function(neighbors, order) {
 #' and 2nd order neighbors.
 #'
 #' @inheritParams st_neighbor_lag
+#' @importFrom spdep nblag_cumul nblag
 #' @export
 st_neighbor_lag_cumul <- function(neighbors, order) {
   class(neighbors) <- "nb"
