@@ -8,8 +8,8 @@
 
 The goal of sfweight is to create a tidier and more streamlined
 interface to the spdep package. The spdep package has an idiosyncratic
-syntax that can be difficult to fit into a typical data science work
-flow.
+syntax that can be difficult to fit into a typical data science
+workflow. sfweight creates a simpler interface to the spdep package.
 
 The intention behind sfweight is implement a simpler, but stricter
 workflow that enables the creation of neighbors, spatial weights, and
@@ -46,29 +46,15 @@ acs_lagged <- acs %>%
 durbin_lm <- lm(med_house_income ~ trans_lag + by_pub_trans + bach_lag + bach, 
    data = acs_lagged)
 
-summary(durbin_lm)
-#> 
-#> Call:
-#> lm(formula = med_house_income ~ trans_lag + by_pub_trans + bach_lag + 
-#>     bach, data = acs_lagged)
-#> 
-#> Residuals:
-#>    Min     1Q Median     3Q    Max 
-#> -62571 -11262   -681  12022 158306 
-#> 
-#> Coefficients:
-#>                Estimate Std. Error t value Pr(>|t|)    
-#> (Intercept)   2.107e+04  7.764e+03   2.714  0.00723 ** 
-#> trans_lag     7.543e-01  9.881e-02   7.633 9.48e-13 ***
-#> by_pub_trans -2.756e+04  1.240e+04  -2.221  0.02746 *  
-#> bach_lag     -1.532e+05  2.806e+04  -5.461 1.41e-07 ***
-#> bach          1.647e+05  1.882e+04   8.752 9.22e-16 ***
-#> ---
-#> Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-#> 
-#> Residual standard error: 22590 on 198 degrees of freedom
-#> Multiple R-squared:  0.5285, Adjusted R-squared:  0.519 
-#> F-statistic: 55.49 on 4 and 198 DF,  p-value: < 2.2e-16
+broom::tidy(durbin_lm)
+#> # A tibble: 5 x 5
+#>   term            estimate  std.error statistic  p.value
+#>   <chr>              <dbl>      <dbl>     <dbl>    <dbl>
+#> 1 (Intercept)    21073.     7764.          2.71 7.23e- 3
+#> 2 trans_lag          0.754     0.0988      7.63 9.48e-13
+#> 3 by_pub_trans  -27555.    12405.         -2.22 2.75e- 2
+#> 4 bach_lag     -153208.    28056.         -5.46 1.41e- 7
+#> 5 bach          164704.    18820.          8.75 9.22e-16
 ```
 
 ``` r
@@ -78,7 +64,9 @@ acs_lagged %>%
   ggplot(aes(med_house_income, inc_lag, color = lisa_group)) +
   geom_point() +
   labs(title = "Moran Plot") +
-  theme_minimal()
+  theme_minimal() +
+  scale_x_continuous(labels = scales::dollar) + 
+  scale_y_continuous(labels = scales::dollar)
 ```
 
 <img src="man/figures/README-unnamed-chunk-4-1.png" width="100%" />
@@ -247,9 +235,9 @@ airbnb_idw[1]
 #> [78] 153.71365 153.71365 153.71365 148.79092  74.75811
 ```
 
-### Kernal based weights
+### Kernel based weights
 
-Available kernals are:
+Available kernels are:
 
 -   uniform
 -   triangular
@@ -258,7 +246,7 @@ Available kernals are:
 -   gaussian
 
 ``` r
-airbnb_gauss <- st_kernal_weight(airbnb$geometry, airbnb_knn, "gaussian")
+airbnb_gauss <- st_kernel_weight(airbnb$geometry, airbnb_knn, "gaussian")
 
 airbnb_gauss[1]
 #> [[1]]

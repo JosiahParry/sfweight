@@ -18,7 +18,7 @@ knitr::opts_chunk$set(
 <!-- badges: start -->
 <!-- badges: end -->
 
-The goal of sfweight is to create a tidier and more streamlined interface to the spdep package. The spdep package has an idiosyncratic syntax that can be difficult to fit into a typical data science work flow. 
+The goal of sfweight is to create a tidier and more streamlined interface to the spdep package. The spdep package has an idiosyncratic syntax that can be difficult to fit into a typical data science workflow. sfweight creates a simpler interface to the spdep package. 
 
 The intention behind sfweight is implement a simpler, but stricter workflow that enables the creation of neighbors, spatial weights, and spatially lagged variables. This will be accomplished by decoupling neighbors from weights and utilizing list objects.
 
@@ -50,7 +50,7 @@ acs_lagged <- acs %>%
 durbin_lm <- lm(med_house_income ~ trans_lag + by_pub_trans + bach_lag + bach, 
    data = acs_lagged)
 
-summary(durbin_lm)
+broom::tidy(durbin_lm)
 ```
 
 ```{r}
@@ -60,7 +60,9 @@ acs_lagged %>%
   ggplot(aes(med_house_income, inc_lag, color = lisa_group)) +
   geom_point() +
   labs(title = "Moran Plot") +
-  theme_minimal()
+  theme_minimal() +
+  scale_x_continuous(labels = scales::dollar) + 
+  scale_y_continuous(labels = scales::dollar)
 ```
 
 
@@ -129,10 +131,10 @@ airbnb_idw <- st_inverse_weights(airbnb$geometry, airbnb_knn)
 airbnb_idw[1]
 ```
 
-### Kernal based weights
+### Kernel based weights
 
 
-Available kernals are:
+Available kernels are:
 
 - uniform
 - triangular
@@ -141,7 +143,7 @@ Available kernals are:
 - gaussian
 
 ```{r}
-airbnb_gauss <- st_kernal_weight(airbnb$geometry, airbnb_knn, "gaussian")
+airbnb_gauss <- st_kernel_weight(airbnb$geometry, airbnb_knn, "gaussian")
 
 airbnb_gauss[1]
 ```

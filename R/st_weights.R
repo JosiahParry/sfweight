@@ -38,14 +38,14 @@ st_inverse_weights <- function(x, knn) {
 }
 
 
-#' Calculate Kernal Weights
+#' Calculate Kernel Weights
 #'
 #'
 #' @inheritParams st_inverse_weights
-#' @param kernal One of "uniform", "gaussian",  "triangular", "epanechnikov", or "quartic".
+#' @param kernel One of "uniform", "gaussian",  "triangular", "epanechnikov", or "quartic".
 #' @importFrom spdep nbdists dnearneigh include.self
 #' @export
-st_kernal_weight <- function(x, knn, kernal = "uniform") {
+st_kernel_weight <- function(x, knn, kernel = "uniform") {
 
   class(knn) <- "nb"
 
@@ -57,7 +57,7 @@ st_kernal_weight <- function(x, knn, kernal = "uniform") {
 
   kernal_dists <- nbdists(kernal_nb, x)
 
-  lapply(kernal_dists, kernals[[kernal]], threshold)
+  lapply(kernal_dists, kernels[[kernel]], threshold)
 
 
 }

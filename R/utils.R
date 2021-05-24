@@ -36,7 +36,7 @@ recreate_listw <- function(neighbors, weights) {
 
 
 
-kernals <- list(
+kernels <- list(
   uniform = function(x, ...) x * 0 + .5,
   triangular = function(x, thresh) 1 - abs(x / thresh),
   epanechnikov = function(x, thresh) .75 * (1- (x / thresh)^2),
