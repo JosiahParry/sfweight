@@ -27,7 +27,9 @@ You can install the development version from GitHub with
 remotes::install_github("Josiahparry/sfweight")
 ```
 
-## Motivating example
+## Motivating examples
+
+### Spatial OLS
 
 We can fit a spatial Durbin model by calculating spatially lagged
 predictors.
@@ -57,19 +59,74 @@ broom::tidy(durbin_lm)
 #> 5 bach          164704.    18820.          8.75 9.22e-16
 ```
 
+### Local Autocorrelation
+
+We can create a Moran plot by creating a spatially lagged variable.
+Additionally the function `categorize_lisa()` will categorize high-high,
+high-low, etc., groupings of these variables.
+
 ``` r
 acs_lagged %>% 
   mutate(inc_lag = st_lag(med_house_income, nb, wts),
          lisa_group = categorize_lisa(med_house_income, inc_lag)) %>% 
   ggplot(aes(med_house_income, inc_lag, color = lisa_group)) +
+  geom_vline(aes(xintercept = mean(med_house_income)), lty = 2, alpha = 1/3) +
+  geom_hline(aes(yintercept = mean(inc_lag)), lty = 2, alpha = 1/3) + 
   geom_point() +
-  labs(title = "Moran Plot") +
+  labs(title = "Moran Plot",
+       y = "Med. HH Income Spatial Lag",
+       x = "Median Household Income") +
   theme_minimal() +
   scale_x_continuous(labels = scales::dollar) + 
   scale_y_continuous(labels = scales::dollar)
 ```
 
 <img src="man/figures/README-unnamed-chunk-4-1.png" width="100%" />
+
+We can also calculate the Local Moran’s I for each observation using the
+function `local_moran()` this will create a dataframe column containing
+the I, expected I, variance, Z-value, and P-value for each observation.
+You can extract this using `tidyr::unpack()`. In order to do so you need
+to cast as a tibble then cast back to an sf object if you want to
+maintain the sf class.
+
+``` r
+acs_lisa <- acs_lagged %>% 
+  mutate(lisa = local_moran(bach, nb, wts)) %>% 
+  as_tibble() %>% 
+  unpack(lisa) 
+
+acs_lisa %>% 
+  select(last_col(4:0))
+#> # A tibble: 203 x 5
+#>         ii     e_ii var_ii    z_ii    p_ii
+#>      <dbl>    <dbl>  <dbl>   <dbl>   <dbl>
+#>  1  0.315  -0.00495  0.138  0.863  0.194  
+#>  2 -0.137  -0.00495  0.328 -0.231  0.592  
+#>  3  1.22   -0.00495  0.245  2.47   0.00678
+#>  4 -0.253  -0.00495  0.161 -0.618  0.732  
+#>  5 -0.0363 -0.00495  0.245 -0.0634 0.525  
+#>  6  1.23   -0.00495  0.245  2.49   0.00637
+#>  7  0.379  -0.00495  0.138  1.03   0.150  
+#>  8  0.103  -0.00495  0.195  0.245  0.403  
+#>  9  0.0474 -0.00495  0.494  0.0745 0.470  
+#> 10  0.195  -0.00495  0.245  0.405  0.343  
+#> # … with 193 more rows
+```
+
+``` r
+library(sf)
+#> Linking to GEOS 3.8.1, GDAL 3.1.4, PROJ 6.3.1
+ 
+acs_lisa %>% 
+  st_as_sf() %>% 
+  ggplot(aes(fill = ii)) + 
+  geom_sf(color = "black", lwd = 0.2) +
+  scale_fill_binned(n.breaks = 5) + 
+  theme_minimal()
+```
+
+<img src="man/figures/README-unnamed-chunk-6-1.png" width="100%" />
 
 ## Basic usage & contiguities
 

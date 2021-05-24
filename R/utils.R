@@ -13,12 +13,12 @@
 #' @param weights A weights list as created by `st_weights()`.
 #' @keywords internal
 recreate_listw <- function(neighbors, weights) {
-  which_style <- c(attr(wts, "W") %||% NA,
-                   attr(wts, "B") %||% NA,
-                   attr(wts, "C") %||% NA,
-                   attr(wts, "U") %||% NA,
-                   attr(wts, "minmax") %||% NA,
-                   attr(wts, "S") %||% NA)
+  which_style <- c(attr(weights, "W") %||% NA,
+                   attr(weights, "B") %||% NA,
+                   attr(weights, "C") %||% NA,
+                   attr(weights, "U") %||% NA,
+                   attr(weights, "minmax") %||% NA,
+                   attr(weights, "S") %||% NA)
 
   possible_styles <- c("W", "B", "C", "U", "minmax", "S")
 

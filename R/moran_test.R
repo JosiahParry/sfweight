@@ -21,6 +21,7 @@ local_moran <- function(x, neighbors, weights, ...) {
   df <- as.data.frame(lmoran)
 
   setNames(df, c("ii", "e_ii", "var_ii", "z_ii", "p_ii"))
+
 }
 
 

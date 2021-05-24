@@ -32,7 +32,9 @@ remotes::install_github("Josiahparry/sfweight")
 ```
 
 
-## Motivating example
+## Motivating examples
+
+### Spatial OLS
 
 We can fit a spatial Durbin model by calculating spatially lagged predictors. 
 
@@ -53,18 +55,52 @@ durbin_lm <- lm(med_house_income ~ trans_lag + by_pub_trans + bach_lag + bach,
 broom::tidy(durbin_lm)
 ```
 
+### Local Autocorrelation
+
+We can create a Moran plot by creating a spatially lagged variable. Additionally the function `categorize_lisa()` will categorize high-high, high-low, etc., groupings of these variables.
+
 ```{r}
 acs_lagged %>% 
   mutate(inc_lag = st_lag(med_house_income, nb, wts),
          lisa_group = categorize_lisa(med_house_income, inc_lag)) %>% 
   ggplot(aes(med_house_income, inc_lag, color = lisa_group)) +
+  geom_vline(aes(xintercept = mean(med_house_income)), lty = 2, alpha = 1/3) +
+  geom_hline(aes(yintercept = mean(inc_lag)), lty = 2, alpha = 1/3) + 
   geom_point() +
-  labs(title = "Moran Plot") +
+  labs(title = "Moran Plot",
+       y = "Med. HH Income Spatial Lag",
+       x = "Median Household Income") +
   theme_minimal() +
   scale_x_continuous(labels = scales::dollar) + 
   scale_y_continuous(labels = scales::dollar)
 ```
 
+
+We can also calculate the Local  Moran's I for each observation using the function `local_moran()` this will create a dataframe column containing the I, expected I, variance, Z-value, and P-value for each observation. You can extract this using `tidyr::unpack()`. In order to do so you need to cast as a tibble then cast back to an sf object if you want to maintain the sf class. 
+
+
+```{r}
+acs_lisa <- acs_lagged %>% 
+  mutate(lisa = local_moran(bach, nb, wts)) %>% 
+  as_tibble() %>% 
+  unpack(lisa) 
+
+acs_lisa %>% 
+  select(last_col(4:0))
+```
+
+
+
+```{r}
+library(sf)
+ 
+acs_lisa %>% 
+  st_as_sf() %>% 
+  ggplot(aes(fill = ii)) + 
+  geom_sf(color = "black", lwd = 0.2) +
+  scale_fill_binned(n.breaks = 5) + 
+  theme_minimal()
+```
 
 ## Basic usage & contiguities
 
