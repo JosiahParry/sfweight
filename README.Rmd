@@ -45,7 +45,7 @@ library(tidyverse)
 acs_lagged <- acs %>% 
   mutate(nb = st_neighbors(geometry),
          wts = st_weights(nb),
-         trans_lag = st_lag(med_house_income, nb, wts),
+         trans_lag = st_lag(by_pub_trans, nb, wts),
          bach_lag = st_lag(bach, nb, wts))
 
 

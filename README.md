@@ -41,7 +41,7 @@ library(tidyverse)
 acs_lagged <- acs %>% 
   mutate(nb = st_neighbors(geometry),
          wts = st_weights(nb),
-         trans_lag = st_lag(med_house_income, nb, wts),
+         trans_lag = st_lag(by_pub_trans, nb, wts),
          bach_lag = st_lag(bach, nb, wts))
 
 
@@ -50,13 +50,13 @@ durbin_lm <- lm(med_house_income ~ trans_lag + by_pub_trans + bach_lag + bach,
 
 broom::tidy(durbin_lm)
 #> # A tibble: 5 x 5
-#>   term            estimate  std.error statistic  p.value
-#>   <chr>              <dbl>      <dbl>     <dbl>    <dbl>
-#> 1 (Intercept)    21073.     7764.          2.71 7.23e- 3
-#> 2 trans_lag          0.754     0.0988      7.63 9.48e-13
-#> 3 by_pub_trans  -27555.    12405.         -2.22 2.75e- 2
-#> 4 bach_lag     -153208.    28056.         -5.46 1.41e- 7
-#> 5 bach          164704.    18820.          8.75 9.22e-16
+#>   term         estimate std.error statistic  p.value
+#>   <chr>           <dbl>     <dbl>     <dbl>    <dbl>
+#> 1 (Intercept)    56187.     9812.     5.73  3.76e- 8
+#> 2 trans_lag     -13479.    28078.    -0.480 6.32e- 1
+#> 3 by_pub_trans  -43067.    18841.    -2.29  2.33e- 2
+#> 4 bach_lag      -40154.    28287.    -1.42  1.57e- 1
+#> 5 bach          153955.    21490.     7.16  1.51e-11
 ```
 
 ### Local Autocorrelation
