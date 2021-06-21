@@ -1,10 +1,21 @@
 #' Conduct a Moran's I test
 #' @importFrom spdep moran.test
 #' @export
-moran_test <- function(x, neighbors, weights, ...) {
-  listw <- recreate_listw(neighbors, weights)
+#' @examples
+#' acs %>%
+#'   mutate(nb = st_neighbors(geometry),
+#'        wt = st_weights(nb)) %>%
+#'   moran_test(bach, nb, wt)
+moran_test <- function(data, x, neighbors, weights, ...) {
 
-  moran.test(x, listw, ...)
+  listw <- recreate_listw(
+    pull(data, {{ neighbors }}),
+    pull(data, {{ weights }})
+    )
+
+  var <- pull(data, {{ x }})
+
+  moran.test(var, listw, ...)
 }
 
 #' Calculate the Local Moran's I Statistic
@@ -14,6 +25,16 @@ moran_test <- function(x, neighbors, weights, ...) {
 #' @param ... See `?spdep::localmoran()` for more options.
 #' @importFrom spdep localmoran
 #' @export
+#' @examples
+#' library(tidyverse)
+#'
+#' lisa <- sfweight::acs %>%
+#'   mutate(nb = st_neighbors(geometry),
+#'          wt = st_weights(nb),
+#'          moran = local_moran(med_house_income, nb, wt))
+#'
+#' pluck(lisa, "moran")
+
 local_moran <- function(x, neighbors, weights, ...) {
   listw <- recreate_listw(neighbors, weights)
   lmoran <- localmoran(x, listw, ...)
