@@ -71,7 +71,7 @@ categorize_lisa <- function(x, x_lag, scale = TRUE) {
   cats[x > mean(x) & x_lag < mean(x_lag)] <- "HL"
   cats[x < mean(x) & x_lag < mean(x_lag)] <- "LL"
   cats[x < mean(x) & x_lag > mean(x_lag)] <- "LH"
-
+  cats[cats == ""] <- NA
   cats
 }
 
