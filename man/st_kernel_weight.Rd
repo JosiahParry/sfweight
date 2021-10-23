@@ -4,12 +4,12 @@
 \alias{st_kernel_weight}
 \title{Calculate Kernel Weights}
 \usage{
-st_kernel_weight(x, knn, kernel = "uniform")
+st_kernel_weight(x, nb, kernel = "uniform")
 }
 \arguments{
 \item{x}{Spatial points. Typically the \code{geometry} column of an sf object.}
 
-\item{knn}{A knn neighbor list as created from \code{st_knn()}.}
+\item{nb}{A nb neighbor list such as created from \code{st_knn(x, k = 1)}.}
 
 \item{kernel}{One of "uniform", "gaussian",  "triangular", "epanechnikov", or "quartic".}
 }

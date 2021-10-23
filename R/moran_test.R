@@ -34,16 +34,30 @@ moran_test <- function(data, x, neighbors, weights, ...) {
 #'          moran = local_moran(med_house_income, nb, wt))
 #'
 #' pluck(lisa, "moran")
+local_moran <- function(x, nb, wt, alpha = 0.05, scale = TRUE, ...) {
+  listw <- recreate_listw(nb, wt)
+  lmoran <- spdep::localmoran(x, listw, ...)
 
-local_moran <- function(x, neighbors, weights, ...) {
-  listw <- recreate_listw(neighbors, weights)
-  lmoran <- localmoran(x, listw, ...)
+  df <- setNames(as.data.frame(lmoran),
+                 c("ii", "e_ii", "var_ii", "z_ii", "p_ii"))
 
-  df <- as.data.frame(lmoran)
+  lisa_cats <- categorize_lisa(x, spdep::lag.listw(listw, x))
 
-  setNames(df, c("ii", "e_ii", "var_ii", "z_ii", "p_ii"))
+  df[["lisa_category"]] <- ifelse(df[["p_ii"]] <= alpha, lisa_cats, "Insignificant")
 
+  df
 }
+
+#' Unpack LISA data frame column
+#'
+#' @param x An sf object
+#' @param lisa The unquoted column name containing the LISA data frame
+#' @export
+unpack_lisa <- function(x, lisa, ...) {
+  # TODO check for tidyr & tibble fail is not installed
+  sf::st_as_sf(tidyr::unpack(tibble::as_tibble(x), {{ lisa }}))
+}
+
 
 
 

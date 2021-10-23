@@ -7,7 +7,7 @@
 #'
 #' @details Utilizes `spdep::nbdists()` for distance calculation.
 #' @export
-st_nb_dist <- function(x, nb, longlat = NULL) {
+st_nb_dists <- function(x, nb, longlat = NULL) {
 
   class(nb) <- "nb"
 

@@ -13,6 +13,8 @@ st_lag(x, neighbors, weights, allow_zero = NULL, na_ok = FALSE, ...)
 
 \item{weights}{A weights list as created by \code{st_weights()}.}
 
+\item{allow_zero}{If \code{TRUE}, assigns zero as lagged value to zone without neighbors.}
+
 \item{na_ok}{Default \code{FALSE}. If, \code{TRUE} missing values return a lagged \code{NA}.}
 
 \item{...}{See \code{?spdep::lag.listw} for more.}

@@ -1,13 +1,13 @@
 #' Calculate spatial weights
-#' @param neighbors A neighbor list object as created by `st_neighbors()`.
+#' @param nb A neighbor list object as created by `st_neighbors()`.
 #' @param style Default `"W"` for row standardized weights.
 #' @importFrom spdep nb2listw
 #' @export
-st_weights <- function(neighbors, style = "W", allow_zero = NULL, ...) {
+st_weights <- function(nb, style = "W", allow_zero = NULL, ...) {
 
-  class(neighbors) <- "nb"
+  class(nb) <- "nb"
 
-  listw <- nb2listw(neighbors, style = style, zero.policy = allow_zero, ...)
+  listw <- nb2listw(nb, style = style, zero.policy = allow_zero, ...)
 
   listw[["weights"]]
 }
@@ -16,24 +16,24 @@ st_weights <- function(neighbors, style = "W", allow_zero = NULL, ...) {
 #' Calculate Inverse Distance Bands
 #'
 #' @param x Spatial points. Typically the `geometry` column of an sf object.
-#' @param knn A knn neighbor list as created from `st_knn()`.
+#' @param nb A nb neighbor list such as created from `st_knn(x, k = 1)`.
 #'
-#' @details See implementation details [here](https://spatialanalysis.github.io/lab_tutorials/Spatial_Weights_as_Distance_Functions.html#kernal-weights).
+#' @details See implementation details [here](https://spatialanalysis.github.io/lab_tutorials/Spatial_Weights_as_Distance_Functions.html#kernal-weights). For more on distance band based weights see [here](https://spatialanalysis.github.io/lab_tutorials/Distance_Based_Spatial_Weights.html#creating-distance-band-weights).
 #'
 #' @importFrom spdep dnearneigh nbdists
 #' @export
-st_inverse_weights <- function(x, knn) {
+st_inverse_weights <- function(x, nb, scale = 100) {
   # As implemented by Luc Anselin
   # https://spatialanalysis.github.io/lab_tutorials/Spatial_Weights_as_Distance_Functions.html#inverse-distance-weights
   class(knn) <- "nb"
 
-  threshold <- max(unlist(nbdists(knn, x)))
+  threshold <- max(unlist(nbdists(nb, x)))
 
   dist_band <- dnearneigh(x, 0, threshold)
 
   distances <- nbdists(dist_band, x)
 
-  lapply(distances, function(x) (1/(x/100)))
+  lapply(distances, function(x) (1/(x/scale)))
 
 }
 
@@ -45,11 +45,11 @@ st_inverse_weights <- function(x, knn) {
 #' @param kernel One of "uniform", "gaussian",  "triangular", "epanechnikov", or "quartic".
 #' @importFrom spdep nbdists dnearneigh include.self
 #' @export
-st_kernel_weight <- function(x, knn, kernel = "uniform") {
+st_kernel_weight <- function(x, nb, kernel = "uniform") {
 
-  class(knn) <- "nb"
+  class(nb) <- "nb"
 
-  threshold <- max(unlist(nbdists(knn, x)))
+  threshold <- max(unlist(nbdists(nb, x)))
 
   kernal_nb <- dnearneigh(x, 0, threshold)
 

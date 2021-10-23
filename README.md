@@ -4,20 +4,22 @@
 # sfweight
 
 <!-- badges: start -->
+
+[![CRAN
+status](https://www.r-pkg.org/badges/version/sfweight)](https://CRAN.R-project.org/package=sfweight)
+[![Lifecycle:
+experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 <!-- badges: end -->
 
-The goal of sfweight is to create a tidier and more streamlined
-interface to the spdep package. The spdep package has an idiosyncratic
-syntax that can be difficult to fit into a typical data science
-workflow. sfweight creates a simpler interface to the spdep package.
+The goal of sfweight is to create a tidier and streamlined interface to
+the spdep package.
 
 The intention behind sfweight is implement a simpler, but stricter
 workflow that enables the creation of neighbors, spatial weights, and
-spatially lagged variables. This will be accomplished by decoupling
-neighbors from weights and utilizing list objects.
+spatially lagged variables.
 
 sfweight uses sf objects whereas spdep is more flexible with the types
-of input objects vaialable.
+of input objects.
 
 ## Installation
 

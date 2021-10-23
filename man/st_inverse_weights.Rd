@@ -4,16 +4,16 @@
 \alias{st_inverse_weights}
 \title{Calculate Inverse Distance Bands}
 \usage{
-st_inverse_weights(x, knn)
+st_inverse_weights(x, nb, scale = 100)
 }
 \arguments{
 \item{x}{Spatial points. Typically the \code{geometry} column of an sf object.}
 
-\item{knn}{A knn neighbor list as created from \code{st_knn()}.}
+\item{nb}{A nb neighbor list such as created from \code{st_knn(x, k = 1)}.}
 }
 \description{
 Calculate Inverse Distance Bands
 }
 \details{
-See implementation details \href{https://spatialanalysis.github.io/lab_tutorials/Spatial_Weights_as_Distance_Functions.html#kernal-weights}{here}.
+See implementation details \href{https://spatialanalysis.github.io/lab_tutorials/Spatial_Weights_as_Distance_Functions.html#kernal-weights}{here}. For more on distance band based weights see \href{https://spatialanalysis.github.io/lab_tutorials/Distance_Based_Spatial_Weights.html#creating-distance-band-weights}{here}.
 }

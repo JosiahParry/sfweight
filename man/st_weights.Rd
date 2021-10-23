@@ -4,10 +4,10 @@
 \alias{st_weights}
 \title{Calculate spatial weights}
 \usage{
-st_weights(neighbors, style = "W", allow_zero = NULL, ...)
+st_weights(nb, style = "W", allow_zero = NULL, ...)
 }
 \arguments{
-\item{neighbors}{A neighbor list object as created by \code{st_neighbors()}.}
+\item{nb}{A neighbor list object as created by \code{st_neighbors()}.}
 
 \item{style}{Default \code{"W"} for row standardized weights.}
 }

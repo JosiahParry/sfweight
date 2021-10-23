@@ -4,8 +4,14 @@
 \alias{moran_test}
 \title{Conduct a Moran's I test}
 \usage{
-moran_test(x, neighbors, weights, ...)
+moran_test(data, x, neighbors, weights, ...)
 }
 \description{
 Conduct a Moran's I test
+}
+\examples{
+acs \%>\%
+  mutate(nb = st_neighbors(geometry),
+       wt = st_weights(nb)) \%>\%
+  moran_test(bach, nb, wt)
 }

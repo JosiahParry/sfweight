@@ -4,17 +4,23 @@
 \alias{local_moran}
 \title{Calculate the Local Moran's I Statistic}
 \usage{
-local_moran(x, neighbors, weights, ...)
+local_moran(x, nb, wt, alpha = 0.05, scale = TRUE, ...)
 }
 \arguments{
 \item{x}{A numeric vector.}
-
-\item{neighbors}{A neighbor list object as created by \code{st_neighbors()}.}
-
-\item{weights}{A weights list as created by \code{st_weights()}.}
 
 \item{...}{See \code{?spdep::localmoran()} for more options.}
 }
 \description{
 Calculate the Local Moran's I Statistic
+}
+\examples{
+library(tidyverse)
+
+lisa <- sfweight::acs \%>\%
+  mutate(nb = st_neighbors(geometry),
+         wt = st_weights(nb),
+         moran = local_moran(med_house_income, nb, wt))
+
+pluck(lisa, "moran")
 }
