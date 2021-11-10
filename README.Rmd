@@ -13,18 +13,14 @@ knitr::opts_chunk$set(
 )
 ```
 
-# sfweight
 
 <!-- badges: start -->
 [![CRAN status](https://www.r-pkg.org/badges/version/sfweight)](https://CRAN.R-project.org/package=sfweight)
 [![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 <!-- badges: end -->
 
-The goal of sfweight is to create a tidier and streamlined interface to the spdep package. 
 
-The intention behind sfweight is implement a simpler, but stricter workflow that enables the creation of neighbors, spatial weights, and spatially lagged variables. 
-
-sfweight uses sf objects whereas spdep is more flexible with the types of input objects. 
+sfweight is an opinionated translation of the wonderful spdep package. The goal is to provide a streamlined method of doing spatial statistics that works with sf objects, data frames, and the tidyverse. spdep is more flexible with the types of input objects and a bit more idiosyncratic in the syntax that is used. 
 
 ## Installation
 

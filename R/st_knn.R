@@ -1,8 +1,10 @@
 #' Calculate K-Nearest Neighbors
 #'
+#'
 #' @param x An sf or sfc object.
 #' @importFrom sf st_centroid st_geometry
 #' @importFrom spdep knn2nb knearneigh
+#' @family neighbors
 #' @export
 st_knn <- function(x, k = 1, ...) {
 
@@ -21,7 +23,3 @@ st_knn <- function(x, k = 1, ...) {
 
   unclass(spdep::knn2nb(ks))
 }
-#
-# columbus %>%
-#   mutate(knn_nb = st_knn_neighbors(geometry, k = 2),
-#          nb = st_neighbors(geometry))

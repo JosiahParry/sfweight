@@ -14,3 +14,9 @@ st_weights(nb, style = "W", allow_zero = NULL, ...)
 \description{
 Calculate spatial weights
 }
+\seealso{
+Other weights: 
+\code{\link{st_inverse_weights}()},
+\code{\link{st_kernel_weight}()}
+}
+\concept{weights}

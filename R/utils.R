@@ -1,3 +1,4 @@
+#' @keywords internal
 `%||%` <- function (x, y) {
   if (rlang::is_null(x))
     y

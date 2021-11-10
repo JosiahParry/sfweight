@@ -4,14 +4,14 @@
 \alias{st_lag}
 \title{Calculate spatial lag}
 \usage{
-st_lag(x, neighbors, weights, allow_zero = NULL, na_ok = FALSE, ...)
+st_lag(x, nb, wt, allow_zero = NULL, na_ok = FALSE, ...)
 }
 \arguments{
 \item{x}{A numeric vector}
 
-\item{neighbors}{A neighbor list object as created by \code{st_neighbors()}.}
+\item{nb}{A neighbor list object as created by \code{st_neighbors()}.}
 
-\item{weights}{A weights list as created by \code{st_weights()}.}
+\item{wt}{A weights list as created by \code{st_weights()}.}
 
 \item{allow_zero}{If \code{TRUE}, assigns zero as lagged value to zone without neighbors.}
 
@@ -22,3 +22,12 @@ st_lag(x, neighbors, weights, allow_zero = NULL, na_ok = FALSE, ...)
 \description{
 Calculate spatial lag
 }
+\seealso{
+Other stats: 
+\code{\link{geary_test}()},
+\code{\link{local_moran}()},
+\code{\link{moran_mc}()},
+\code{\link{moran_test}()},
+\code{\link{st_nb_dists}()}
+}
+\concept{stats}

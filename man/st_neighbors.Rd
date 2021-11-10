@@ -4,13 +4,9 @@
 \alias{st_neighbors}
 \title{Identify polygon neighbors}
 \usage{
-st_neighbors(x, queen = TRUE, ...)
-}
-\arguments{
-\item{x}{An sf or sfc object.}
-
-\item{queen}{Default \code{TRUE}. For more see \code{?spdep::poly2nb}}
+st_neighbors(...)
 }
 \description{
-Identify polygon neighbors
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#superseded}{\figure{lifecycle-superseded.svg}{options: alt='[Superseded]'}}}{\strong{[Superseded]}}. Use \code{st_contiguity} instead. This function creates neighbors based on contiguities.
 }
+\keyword{internal}

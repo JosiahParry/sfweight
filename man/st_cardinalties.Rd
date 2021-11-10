@@ -15,3 +15,10 @@ Calculate neighbor cardinalities
 \details{
 See \code{?spdep::card()} for more.
 }
+\seealso{
+Other other: 
+\code{\link{categorize_lisa}()},
+\code{\link{st_nb_lag_cumul}()},
+\code{\link{st_nb_lag}()}
+}
+\concept{other}

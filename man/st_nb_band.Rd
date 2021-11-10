@@ -16,5 +16,11 @@ st_nb_band(x, lower = 0, upper = 0.01, ...)
 \item{...}{Passed to \code{spdep::dnearneigh()}.}
 }
 \description{
-Creates nieghbors based on a distance band.
+Creates neighbors based on a distance band.
 }
+\seealso{
+Other neighbors: 
+\code{\link{st_contiguity}()},
+\code{\link{st_knn}()}
+}
+\concept{neighbors}

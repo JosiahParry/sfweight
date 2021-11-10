@@ -19,3 +19,12 @@ From an nb list and point geometry, return a list of distances for each observat
 \details{
 Utilizes \code{spdep::nbdists()} for distance calculation.
 }
+\seealso{
+Other stats: 
+\code{\link{geary_test}()},
+\code{\link{local_moran}()},
+\code{\link{moran_mc}()},
+\code{\link{moran_test}()},
+\code{\link{st_lag}()}
+}
+\concept{stats}

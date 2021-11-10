@@ -12,3 +12,9 @@ st_knn(x, k = 1, ...)
 \description{
 Calculate K-Nearest Neighbors
 }
+\seealso{
+Other neighbors: 
+\code{\link{st_contiguity}()},
+\code{\link{st_nb_band}()}
+}
+\concept{neighbors}

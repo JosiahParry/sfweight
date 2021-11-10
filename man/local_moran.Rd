@@ -24,3 +24,12 @@ lisa <- sfweight::acs \%>\%
 
 pluck(lisa, "moran")
 }
+\seealso{
+Other stats: 
+\code{\link{geary_test}()},
+\code{\link{moran_mc}()},
+\code{\link{moran_test}()},
+\code{\link{st_lag}()},
+\code{\link{st_nb_dists}()}
+}
+\concept{stats}

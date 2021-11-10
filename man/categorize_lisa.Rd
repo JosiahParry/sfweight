@@ -10,7 +10,16 @@ categorize_lisa(x, x_lag, scale = TRUE)
 \item{x}{Numeric vector.}
 
 \item{x_lag}{The spatial lag of x as calculated by \code{st_lag()}.}
+
+\item{scale}{Whether or not to standardize \code{x}. Defaults to \code{TRUE}.}
 }
 \description{
 Categorize LISA
 }
+\seealso{
+Other other: 
+\code{\link{st_cardinalties}()},
+\code{\link{st_nb_lag_cumul}()},
+\code{\link{st_nb_lag}()}
+}
+\concept{other}

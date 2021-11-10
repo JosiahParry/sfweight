@@ -4,7 +4,7 @@
 \alias{moran_test}
 \title{Conduct a Moran's I test}
 \usage{
-moran_test(data, x, neighbors, weights, ...)
+moran_test(data, x, nb, wt, ...)
 }
 \description{
 Conduct a Moran's I test
@@ -15,3 +15,12 @@ acs \%>\%
        wt = st_weights(nb)) \%>\%
   moran_test(bach, nb, wt)
 }
+\seealso{
+Other stats: 
+\code{\link{geary_test}()},
+\code{\link{local_moran}()},
+\code{\link{moran_mc}()},
+\code{\link{st_lag}()},
+\code{\link{st_nb_dists}()}
+}
+\concept{stats}

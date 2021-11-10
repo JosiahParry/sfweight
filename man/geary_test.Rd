@@ -16,3 +16,12 @@ geary_test(x, neighbors, weights, ...)
 \description{
 Conducts a Geary's C test
 }
+\seealso{
+Other stats: 
+\code{\link{local_moran}()},
+\code{\link{moran_mc}()},
+\code{\link{moran_test}()},
+\code{\link{st_lag}()},
+\code{\link{st_nb_dists}()}
+}
+\concept{stats}

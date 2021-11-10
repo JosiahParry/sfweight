@@ -17,3 +17,9 @@ Calculate Inverse Distance Bands
 \details{
 See implementation details \href{https://spatialanalysis.github.io/lab_tutorials/Spatial_Weights_as_Distance_Functions.html#kernal-weights}{here}. For more on distance band based weights see \href{https://spatialanalysis.github.io/lab_tutorials/Distance_Based_Spatial_Weights.html#creating-distance-band-weights}{here}.
 }
+\seealso{
+Other weights: 
+\code{\link{st_kernel_weight}()},
+\code{\link{st_weights}()}
+}
+\concept{weights}

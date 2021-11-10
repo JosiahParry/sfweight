@@ -1,21 +1,41 @@
 #' Conduct a Moran's I test
 #' @importFrom spdep moran.test
 #' @export
+#' @family stats
 #' @examples
 #' acs %>%
 #'   mutate(nb = st_neighbors(geometry),
 #'        wt = st_weights(nb)) %>%
 #'   moran_test(bach, nb, wt)
-moran_test <- function(data, x, neighbors, weights, ...) {
+moran_test <- function(data, x, nb, wt, ...) {
 
   listw <- recreate_listw(
-    pull(data, {{ neighbors }}),
-    pull(data, {{ weights }})
+    pull(data, {{ nb }}),
+    pull(data, {{ wt }})
     )
 
   var <- pull(data, {{ x }})
 
   moran.test(var, listw, ...)
+}
+
+
+#' Moran's I Permutation Test
+#'
+#' @importFrom spdep moran.mc
+#' @family stats
+#' @export
+moran_mc <- function(data, x, nb, wt, nsim = 999, alternative = "greater", ...) {
+
+  listw <- recreate_listw(
+    pull(data, {{ nb }}),
+    pull(data, {{ wt }})
+  )
+
+  var <- pull(data, {{ x }})
+
+  moran.mc(var, listw, nsim = nsim, alternative = alternative, ...)
+
 }
 
 #' Calculate the Local Moran's I Statistic
@@ -24,6 +44,7 @@ moran_test <- function(data, x, neighbors, weights, ...) {
 #' @inheritParams recreate_listw
 #' @param ... See `?spdep::localmoran()` for more options.
 #' @importFrom spdep localmoran
+#' @family stats
 #' @export
 #' @examples
 #' library(tidyverse)
@@ -48,23 +69,13 @@ local_moran <- function(x, nb, wt, alpha = 0.05, scale = TRUE, ...) {
   df
 }
 
-#' Unpack LISA data frame column
-#'
-#' @param x An sf object
-#' @param lisa The unquoted column name containing the LISA data frame
-#' @export
-unpack_lisa <- function(x, lisa, ...) {
-  # TODO check for tidyr & tibble fail is not installed
-  sf::st_as_sf(tidyr::unpack(tibble::as_tibble(x), {{ lisa }}))
-}
-
-
-
 
 #' Categorize LISA
 #'
 #' @param x Numeric vector.
 #' @param x_lag The spatial lag of x as calculated by `st_lag()`.
+#' @param scale Whether or not to standardize `x`. Defaults to `TRUE`.
+#' @family other
 #' @export
 categorize_lisa <- function(x, x_lag, scale = TRUE) {
 

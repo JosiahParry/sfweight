@@ -16,3 +16,9 @@ st_kernel_weight(x, nb, kernel = "uniform")
 \description{
 Calculate Kernel Weights
 }
+\seealso{
+Other weights: 
+\code{\link{st_inverse_weights}()},
+\code{\link{st_weights}()}
+}
+\concept{weights}

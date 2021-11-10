@@ -6,6 +6,7 @@
 #' @param longlat	`TRUE` if point coordinates are longitude-latitude decimal degrees, in which case distances are measured in kilometers. See `?spdep::nbdists()` for more.
 #'
 #' @details Utilizes `spdep::nbdists()` for distance calculation.
+#' @family stats
 #' @export
 st_nb_dists <- function(x, nb, longlat = NULL) {
 
@@ -14,3 +15,5 @@ st_nb_dists <- function(x, nb, longlat = NULL) {
   unclass(spdep::nbdists(nb, x, longlat))
 
 }
+
+

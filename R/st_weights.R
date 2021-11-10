@@ -2,6 +2,7 @@
 #' @param nb A neighbor list object as created by `st_neighbors()`.
 #' @param style Default `"W"` for row standardized weights.
 #' @importFrom spdep nb2listw
+#' @family weights
 #' @export
 st_weights <- function(nb, style = "W", allow_zero = NULL, ...) {
 
@@ -21,6 +22,7 @@ st_weights <- function(nb, style = "W", allow_zero = NULL, ...) {
 #' @details See implementation details [here](https://spatialanalysis.github.io/lab_tutorials/Spatial_Weights_as_Distance_Functions.html#kernal-weights). For more on distance band based weights see [here](https://spatialanalysis.github.io/lab_tutorials/Distance_Based_Spatial_Weights.html#creating-distance-band-weights).
 #'
 #' @importFrom spdep dnearneigh nbdists
+#' @family weights
 #' @export
 st_inverse_weights <- function(x, nb, scale = 100) {
   # As implemented by Luc Anselin
@@ -44,6 +46,7 @@ st_inverse_weights <- function(x, nb, scale = 100) {
 #' @inheritParams st_inverse_weights
 #' @param kernel One of "uniform", "gaussian",  "triangular", "epanechnikov", or "quartic".
 #' @importFrom spdep nbdists dnearneigh include.self
+#' @family weights
 #' @export
 st_kernel_weight <- function(x, nb, kernel = "uniform") {
 
