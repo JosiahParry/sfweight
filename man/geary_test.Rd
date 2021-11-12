@@ -4,14 +4,10 @@
 \alias{geary_test}
 \title{Conducts a Geary's C test}
 \usage{
-geary_test(x, neighbors, weights, ...)
+geary_test(x, nb, wt, ...)
 }
 \arguments{
 \item{x}{A numeric vector.}
-
-\item{neighbors}{A neighbor list object as created by \code{st_neighbors()}.}
-
-\item{weights}{A weights list as created by \code{st_weights()}.}
 }
 \description{
 Conducts a Geary's C test

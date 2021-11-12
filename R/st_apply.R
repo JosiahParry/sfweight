@@ -31,7 +31,6 @@
 #' If any of these three function arguments are omitted from `.f`, dots (`...`) must be supplied.
 #'
 #' @param suffix The `map` variant to use. Options are "dbl", "int", "lgl", "chr", "list".
-#' @impot
 #' @export
 #' @examples
 #' #TODO make acs_nb object and make examples

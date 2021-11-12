@@ -6,6 +6,11 @@
 \usage{
 st_nb_lag_cumul(nb, order)
 }
+\arguments{
+\item{nb}{A neighbor list object as created by \code{st_contiguity()}.}
+
+\item{order}{The order of neighbors.}
+}
 \description{
 Creates an encompassing neighbor list of the order specified.
 For example, if the order is 2 the result contains both 1st

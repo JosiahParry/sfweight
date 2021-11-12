@@ -4,16 +4,13 @@
 \alias{st_cardinalties}
 \title{Calculate neighbor cardinalities}
 \usage{
-st_cardinalties(neighbors)
+st_cardinalties(nb)
 }
 \arguments{
-\item{neighbors}{A neighbor list object as created by \code{st_neighbors()}.}
+\item{nb}{A neighbor list object as created by \code{st_neighbors()}.}
 }
 \description{
 Calculate neighbor cardinalities
-}
-\details{
-See \code{?spdep::card()} for more.
 }
 \seealso{
 Other other: 
