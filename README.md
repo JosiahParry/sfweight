@@ -1,7 +1,5 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
-
-
 <!-- badges: start -->
 
 [![CRAN
@@ -10,15 +8,14 @@ status](https://www.r-pkg.org/badges/version/sfweight)](https://CRAN.R-project.o
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 <!-- badges: end -->
 
-The goal of sfweight is to create a tidier and streamlined interface to
-the spdep package.
+NOTE: this package is under active and experimental development.
+Functions are likely to change.
 
-The intention behind sfweight is implement a simpler, but stricter
-workflow that enables the creation of neighbors, spatial weights, and
-spatially lagged variables.
-
-sfweight uses sf objects whereas spdep is more flexible with the types
-of input objects.
+sfweight is an opinionated translation of the wonderful spdep package.
+The goal is to provide a streamlined method of doing spatial statistics
+that works with sf objects, data frames, and the tidyverse. spdep is
+more flexible with the types of input objects and a bit more
+idiosyncratic in the syntax that is used.
 
 ## Installation
 
@@ -40,7 +37,7 @@ library(sfweight)
 library(tidyverse)
 
 acs_lagged <- acs %>% 
-  mutate(nb = st_neighbors(geometry),
+  mutate(nb = st_contiguity(geometry),
          wts = st_weights(nb),
          trans_lag = st_lag(by_pub_trans, nb, wts),
          bach_lag = st_lag(bach, nb, wts))
@@ -50,7 +47,7 @@ durbin_lm <- lm(med_house_income ~ trans_lag + by_pub_trans + bach_lag + bach,
    data = acs_lagged)
 
 broom::tidy(durbin_lm)
-#> # A tibble: 5 x 5
+#> # A tibble: 5 × 5
 #>   term         estimate std.error statistic  p.value
 #>   <chr>           <dbl>     <dbl>     <dbl>    <dbl>
 #> 1 (Intercept)    56187.     9812.     5.73  3.76e- 8
@@ -87,53 +84,26 @@ acs_lagged %>%
 We can also calculate the Local Moran’s I for each observation using the
 function `local_moran()` this will create a dataframe column containing
 the I, expected I, variance, Z-value, and P-value for each observation.
-You can extract this using `tidyr::unpack()`. In order to do so you need
-to cast as a tibble then cast back to an sf object if you want to
-maintain the sf class.
+You can extract this using `tidyr::unnest()`.
 
 ``` r
-acs_lisa <- acs_lagged %>% 
-  mutate(lisa = local_moran(bach, nb, wts)) %>% 
-  as_tibble() %>% 
-  unpack(lisa) 
-
-acs_lisa %>% 
-  select(last_col(4:0))
-#> # A tibble: 203 x 5
-#>         ii     e_ii var_ii    z_ii    p_ii
-#>      <dbl>    <dbl>  <dbl>   <dbl>   <dbl>
-#>  1  0.315  -0.00495  0.138  0.863  0.194  
-#>  2 -0.137  -0.00495  0.328 -0.231  0.592  
-#>  3  1.22   -0.00495  0.245  2.47   0.00678
-#>  4 -0.253  -0.00495  0.161 -0.618  0.732  
-#>  5 -0.0363 -0.00495  0.245 -0.0634 0.525  
-#>  6  1.23   -0.00495  0.245  2.49   0.00637
-#>  7  0.379  -0.00495  0.138  1.03   0.150  
-#>  8  0.103  -0.00495  0.195  0.245  0.403  
-#>  9  0.0474 -0.00495  0.494  0.0745 0.470  
-#> 10  0.195  -0.00495  0.245  0.405  0.343  
-#> # … with 193 more rows
+acs %>% 
+  mutate(nb = st_contiguity(geometry),
+         wt = st_weights(nb),
+    lisa = local_moran(med_house_income, nb, wt)) %>% 
+  unnest(lisa) %>% 
+  ggplot(aes(fill = lisa_category)) + 
+  geom_sf(color = "black", lwd = 0.25) +
+  scale_fill_manual(values = c("HH" = "#528672","LL" = "#525586", "Insignificant" = NA))
 ```
 
-``` r
-library(sf)
-#> Linking to GEOS 3.8.1, GDAL 3.1.4, PROJ 6.3.1
- 
-acs_lisa %>% 
-  st_as_sf() %>% 
-  ggplot(aes(fill = ii)) + 
-  geom_sf(color = "black", lwd = 0.2) +
-  scale_fill_binned(n.breaks = 5) + 
-  theme_minimal()
-```
-
-<img src="man/figures/README-unnamed-chunk-6-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-5-1.png" width="100%" />
 
 ## Basic usage & contiguities
 
 ``` r
 str(acs)
-#> sf[,5] [203 × 5] (S3: sf/tbl_df/tbl/data.frame)
+#> sf [203 × 5] (S3: sf/tbl_df/tbl/data.frame)
 #>  $ fips            : chr [1:203] "25025092101" "25025100603" "25025010103" "25025070402" ...
 #>  $ med_house_income: num [1:203] 52924 86659 31218 25750 68500 ...
 #>  $ by_pub_trans    : num [1:203] 0.3208 0.0945 0.1815 0.2229 0.199 ...
@@ -147,10 +117,10 @@ str(acs)
 #>   ..- attr(*, "names")= chr [1:4] "fips" "med_house_income" "by_pub_trans" "bach"
 ```
 
-We can get neighbors based on Queen contiguities with `st_neighbors()`.
+We can get neighbors based on Queen contiguities with `st_contiguity()`.
 
 ``` r
-nbs <- st_neighbors(acs)
+nbs <- st_contiguity(acs)
 
 nbs[1:5]
 #> [[1]]
@@ -230,7 +200,7 @@ airbnb
 #> Dimension:     XY
 #> Bounding box:  xmin: -71.1728 ymin: 42.23576 xmax: -70.99595 ymax: 42.39549
 #> Geodetic CRS:  WGS 84
-#> # A tibble: 3,799 x 5
+#> # A tibble: 3,799 × 5
 #>       id neighborhood room_type       price             geometry
 #>  * <dbl> <chr>        <chr>           <dbl>          <POINT [°]>
 #>  1  3781 East Boston  Entire home/apt   125 (-71.02991 42.36413)
@@ -325,26 +295,26 @@ airbnb_gauss[1]
 
 ``` r
 acs %>% 
-  transmute(nb = st_neighbors(geometry),
-            nb_2 = st_neighbor_lag(nb, 2),
-            nb_cumul_2 = st_neighbor_lag_cumul(nb, 2))
+  transmute(nb = st_contiguity(geometry),
+            nb_2 = st_nb_lag(nb, 2),
+            nb_cumul_2 = st_nb_lag_cumul(nb, 2))
 #> Simple feature collection with 203 features and 3 fields
 #> Geometry type: MULTIPOLYGON
 #> Dimension:     XY
 #> Bounding box:  xmin: -71.19125 ymin: 42.22793 xmax: -70.9201 ymax: 42.45012
 #> Geodetic CRS:  WGS 84
-#> # A tibble: 203 x 4
-#>    nb      nb_2     nb_cumul_2                                          geometry
-#>  * <list>  <list>   <list>                                    <MULTIPOLYGON [°]>
-#>  1 <int [… <int [1… <int [24]> (((-71.06249 42.29221, -71.06234 42.29273, -71.0…
-#>  2 <int [… <int [6… <int [9]>  (((-71.05147 42.28931, -71.05136 42.28933, -71.0…
-#>  3 <int [… <int [1… <int [17]> (((-71.11093 42.35047, -71.11093 42.3505, -71.11…
-#>  4 <int [… <int [1… <int [24]> (((-71.06944 42.346, -71.0691 42.34661, -71.0688…
-#>  5 <int [… <int [9… <int [13]> (((-71.13397 42.25431, -71.13353 42.25476, -71.1…
-#>  6 <int [… <int [1… <int [16]> (((-71.04707 42.3397, -71.04628 42.34037, -71.04…
-#>  7 <int [… <int [1… <int [20]> (((-71.01324 42.38301, -71.01231 42.38371, -71.0…
-#>  8 <int [… <int [8… <int [13]> (((-71.00113 42.3871, -71.001 42.38722, -71.0007…
-#>  9 <int [… <int [1… <int [16]> (((-71.05079 42.32083, -71.0506 42.32076, -71.05…
-#> 10 <int [… <int [1… <int [15]> (((-71.11952 42.28648, -71.11949 42.2878, -71.11…
+#> # A tibble: 203 × 4
+#>    nb        nb_2       nb_cumul_2                                      geometry
+#>  * <list>    <list>     <list>                                <MULTIPOLYGON [°]>
+#>  1 <int [7]> <int [17]> <int [24]> (((-71.06249 42.29221, -71.06234 42.29273, -…
+#>  2 <int [3]> <int [6]>  <int [9]>  (((-71.05147 42.28931, -71.05136 42.28933, -…
+#>  3 <int [4]> <int [13]> <int [17]> (((-71.11093 42.35047, -71.11093 42.3505, -7…
+#>  4 <int [6]> <int [18]> <int [24]> (((-71.06944 42.346, -71.0691 42.34661, -71.…
+#>  5 <int [4]> <int [9]>  <int [13]> (((-71.13397 42.25431, -71.13353 42.25476, -…
+#>  6 <int [4]> <int [12]> <int [16]> (((-71.04707 42.3397, -71.04628 42.34037, -7…
+#>  7 <int [7]> <int [13]> <int [20]> (((-71.01324 42.38301, -71.01231 42.38371, -…
+#>  8 <int [5]> <int [8]>  <int [13]> (((-71.00113 42.3871, -71.001 42.38722, -71.…
+#>  9 <int [2]> <int [14]> <int [16]> (((-71.05079 42.32083, -71.0506 42.32076, -7…
+#> 10 <int [4]> <int [11]> <int [15]> (((-71.11952 42.28648, -71.11949 42.2878, -7…
 #> # … with 193 more rows
 ```

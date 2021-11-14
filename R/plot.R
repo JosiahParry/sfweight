@@ -46,3 +46,8 @@ map_lisa <- function(x, var, nb, wt) {
 
 }
 
+
+# map local neighbor match test
+map_match_test <- function() {
+
+}

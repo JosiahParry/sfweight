@@ -27,7 +27,7 @@ st_weights <- function(nb, style = "W", allow_zero = NULL, ...) {
 st_inverse_weights <- function(x, nb, scale = 100) {
   # As implemented by Luc Anselin
   # https://spatialanalysis.github.io/lab_tutorials/Spatial_Weights_as_Distance_Functions.html#inverse-distance-weights
-  class(knn) <- "nb"
+  class(nb) <- "nb"
 
   threshold <- max(unlist(nbdists(nb, x)))
 

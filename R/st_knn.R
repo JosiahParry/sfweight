@@ -13,7 +13,8 @@ st_knn <- function(x, k = 1, ...) {
   polygon_check <- any(class(x) %in% c("sfc_MULTIPOLYGON", "sfc_POLYGON"))
 
   if (polygon_check) {
-    warning("Polygon provided. Using centroid.")
+
+    cli::cli_alert_info("Polygon provided. Using centroid.")
     pnts <- st_centroid(x)
   } else {
     pnts <- x

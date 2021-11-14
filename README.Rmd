@@ -4,6 +4,7 @@ output: github_document
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
+
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
@@ -19,6 +20,7 @@ knitr::opts_chunk$set(
 [![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 <!-- badges: end -->
 
+NOTE: this package is under active and experimental development. Functions are likely to change. 
 
 sfweight is an opinionated translation of the wonderful spdep package. The goal is to provide a streamlined method of doing spatial statistics that works with sf objects, data frames, and the tidyverse. spdep is more flexible with the types of input objects and a bit more idiosyncratic in the syntax that is used. 
 
@@ -41,7 +43,7 @@ library(sfweight)
 library(tidyverse)
 
 acs_lagged <- acs %>% 
-  mutate(nb = st_neighbors(geometry),
+  mutate(nb = st_contiguity(geometry),
          wts = st_weights(nb),
          trans_lag = st_lag(by_pub_trans, nb, wts),
          bach_lag = st_lag(bach, nb, wts))
@@ -74,31 +76,22 @@ acs_lagged %>%
 ```
 
 
-We can also calculate the Local  Moran's I for each observation using the function `local_moran()` this will create a dataframe column containing the I, expected I, variance, Z-value, and P-value for each observation. You can extract this using `tidyr::unpack()`. In order to do so you need to cast as a tibble then cast back to an sf object if you want to maintain the sf class. 
+We can also calculate the Local  Moran's I for each observation using the function `local_moran()` this will create a dataframe column containing the I, expected I, variance, Z-value, and P-value for each observation. You can extract this using `tidyr::unnest()`.
 
 
 ```{r}
-acs_lisa <- acs_lagged %>% 
-  mutate(lisa = local_moran(bach, nb, wts)) %>% 
-  as_tibble() %>% 
-  unpack(lisa) 
-
-acs_lisa %>% 
-  select(last_col(4:0))
+acs %>% 
+  mutate(nb = st_contiguity(geometry),
+         wt = st_weights(nb),
+    lisa = local_moran(med_house_income, nb, wt)) %>% 
+  unnest(lisa) %>% 
+  ggplot(aes(fill = lisa_category)) + 
+  geom_sf(color = "black", lwd = 0.25) +
+  scale_fill_manual(values = c("HH" = "#528672","LL" = "#525586", "Insignificant" = NA))
+  
 ```
 
 
-
-```{r}
-library(sf)
- 
-acs_lisa %>% 
-  st_as_sf() %>% 
-  ggplot(aes(fill = ii)) + 
-  geom_sf(color = "black", lwd = 0.2) +
-  scale_fill_binned(n.breaks = 5) + 
-  theme_minimal()
-```
 
 ## Basic usage & contiguities
 
@@ -106,11 +99,11 @@ acs_lisa %>%
 str(acs)
 ```
 
-We can get neighbors based on Queen contiguities with `st_neighbors()`.
+We can get neighbors based on Queen contiguities with `st_contiguity()`.
 
 
 ```{r}
-nbs <- st_neighbors(acs)
+nbs <- st_contiguity(acs)
 
 nbs[1:5]
 ```
@@ -187,9 +180,9 @@ airbnb_gauss[1]
 
 ```{r}
 acs %>% 
-  transmute(nb = st_neighbors(geometry),
-            nb_2 = st_neighbor_lag(nb, 2),
-            nb_cumul_2 = st_neighbor_lag_cumul(nb, 2))
+  transmute(nb = st_contiguity(geometry),
+            nb_2 = st_nb_lag(nb, 2),
+            nb_cumul_2 = st_nb_lag_cumul(nb, 2))
 ```
 
 

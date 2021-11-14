@@ -43,7 +43,7 @@ st_nb_lag <- function(nb, order) {
 #' For example, if the order is 2 the result contains both 1st
 #' and 2nd order neighbors.
 #'
-#' @inheritParams st_neighbor_lag
+#' @inheritParams st_nb_lag
 #' @importFrom spdep nblag_cumul nblag
 #' @family other
 #' @export

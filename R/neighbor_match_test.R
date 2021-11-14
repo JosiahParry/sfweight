@@ -3,18 +3,33 @@
 #' @description Implements the Local Neighbor Match Test as described in _Tobler's Law in a Multivariate World_ (Anselin and Li, 2020).
 #'
 #' @export
-neighbor_match_test <- function(x, ...) {
-  UseMethod("neighbor_match_test")
+#'
+#'@examples
+#' acs %>%
+#'   mutate(nb = st_knn(geometry, k = 10),
+#'          nmt = nb_match_test(.cols = list(med_house_income, bach),
+#'                              nb = nb,
+#'                              k = 10))
+#'
+#' acs %>%
+#'   mutate(nb = st_knn(geometry, k = 10)) %>%
+#'   nb_match_test(.cols = c(med_house_income, bach),
+#'                 nb = nb,
+#'                 k = 10)
+#'
+
+nb_match_test <- function(x, ...) {
+  UseMethod("nb_match_test")
 }
 
 # Personal thought, can we extend this concept a bit more to use any form of neighbors matrix? For example contiguities? Then the calculation of p values are a bit different. Your contiguities might have different numbers. Say your k is set to 10 but card(nb) = 5.
 # what is the probability of sampling 10 neighbors and of those 10 5 of them are same as your existing neighbors.
 
 #' @param .cols A list of numeric vectors. Intended to be used inside of a `dplyr::mutate()` call. In the case of a data.frame, the columns to be used in calculating the distance matrix using tidy selection.
-#' @method neighbor_match_test default
-#' @describeIn neighbor_match_test Conduct a neighbor match test within a mutate call.
+#' @method nb_match_test default
+#' @describeIn nb_match_test Conduct a neighbor match test within a mutate call.
 #' @export
-neighbor_match_test.default <- function(.cols, nb, k = 10, method = "euclidean", scale = TRUE, p = 2) {
+nb_match_test.default <- function(.cols, nb, k = 10, method = "euclidean", scale = TRUE, p = 2) {
 
   d <- cast_dist_list(.cols = .cols, method = method, scale = scale, p = p)
 
@@ -29,10 +44,10 @@ neighbor_match_test.default <- function(.cols, nb, k = 10, method = "euclidean",
 #' @param scale Whether or not to standardize columns prior to calculation. It is strongly recommended to do so.
 #' @param p The power of the Minkowski distance.
 #'
-#' @method neighbor_match_test data.frame
-#' @describeIn neighbor_match_test Conduct a neighbor match test with a data frame.
+#' @method nb_match_test data.frame
+#' @describeIn nb_match_test Conduct a neighbor match test with a data frame.
 #' @export
-neighbor_match_test.data.frame <- function(.data, .cols, nb, k = 10,
+nb_match_test.data.frame <- function(.data, .cols, nb, k = 10,
                                            method = "euclidean", scale = TRUE, p = 2) {
 
   d <- cast_dist_df(.data, .cols = {{.cols}}, method, scale, p)
@@ -81,10 +96,8 @@ compute_nmt <- function(d, k, nb) {
   v <- lengths(matches)
   k <- 10
 
-  p_vals <- purrr::map_dbl(v, ~ {
-    v <- .x
-    choose(k, v) * choose(N - k, k - v) / choose(N, k)
-  })
+  p_vals <- choose(k, v) * choose(N - k, k - v) / choose(N, k)
+
 
   tibble::tibble(
     attr_nb = knn_attr,
