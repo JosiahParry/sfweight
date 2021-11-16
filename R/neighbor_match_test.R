@@ -107,3 +107,42 @@ compute_nmt <- function(d, k, nb) {
   )
 }
 
+
+# neighbor match test of varied sample sizes
+
+# 𝐶(𝑘,𝑣)𝐶(𝑛−𝑘,𝑤−𝑣)/ 𝐶(𝑛,𝑤)
+# thanks henry!
+
+# https://math.stackexchange.com/questions/4305145/probability-of-same-observations-in-two# -independent-samples-of-different-size
+#
+# geo_nb <- acs %>%
+#   mutate(nb = st_contiguity(geometry)) %>%
+#   pull(nb)
+#
+# geo_knn <- acs %>%
+#   mutate(nb = st_knn(geometry, 10)) %>%
+#   pull(nb)
+#
+# attr_knn <- acs %>%
+#   as_tibble() %>%
+#   select(bach, med_house_income, by_pub_trans) %>%
+#   as.matrix() %>%
+#   scale() %>%
+#   dbscan::kNN(k = 10)
+#
+# knn_nb <- dbscan::adjacencylist(attr_knn)
+#
+# matches_kw <- purrr::map2(knn_nb, geo_nb, base::intersect)
+# matches_k <- purrr::map2(knn_nb, geo_knn, base::intersect)
+#
+# v <- lengths(matches)
+# w <- lengths(geo_nb)
+# k <- 10
+# N <- length(knn_nb) - 1
+#
+# w > k
+#
+# p_kw<- choose(k, v) * choose(N - k, w - v) / choose(N, w)
+# p_k <- choose(k, v) * choose(N - k, k - v) / choose(N, k)
+# p_vals <= 0.05
+#
