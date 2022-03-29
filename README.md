@@ -1,3 +1,9 @@
+# NOTE: this package is now at [sfdep](https://github.com/JosiahParry/sfdep)
+
+This package is superceded by [**`sfdep`**](https://github.com/JosiahParry/sfdep).
+
+Please download and use `sfdep`.
+
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 <!-- badges: start -->
